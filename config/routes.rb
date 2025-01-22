@@ -7,4 +7,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  post "sign_up", to: "users#create"
+  resources :confirmations, only: [:create, :edit, :new], param: :confirmation_token
 end
