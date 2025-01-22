@@ -23,7 +23,6 @@ module Api
     end
 
     # PUT /api/tasks/:id
-    # PATCH /api/tasks/:id
     def update
       task = Task.find(params[:id])
       if task.update(task_params)
