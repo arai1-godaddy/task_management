@@ -29,7 +29,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    command: ["rails", "server", "-b", "0.0.0.0"]
+    # command: ["./bin/thrust", "./bin/rails", "server"]
 
 volumes:
   mysql-data:
