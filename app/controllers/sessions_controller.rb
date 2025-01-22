@@ -1,16 +1,15 @@
 class SessionsController < ApplicationController
-  include Authentication
 
   # Log in a user
   def create
-    @user = User.find_by(email: params[:user][:email].downcase)
+    user = User.find_by(email: params[:user][:email].downcase)
 
     if user
       if user.unconfirmed?
         render json: { error: "Your account is not confirmed. Please check your email." }, status: :forbidden
       elsif user.authenticate(params[:user][:password])
         login(user) # Set session with the user's ID
-        render json: { message: "Login successful.", user: @user }, status: :ok
+        render json: { message: "Login successful.", user: user }, status: :ok
       else
         render json: { error: "Invalid email or password." }, status: :unauthorized
       end

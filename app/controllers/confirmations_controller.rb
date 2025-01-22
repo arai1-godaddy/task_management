@@ -12,7 +12,7 @@ class ConfirmationsController < ApplicationController
     user = User.find_signed(params[:confirmation_token], purpose: :confirm_email)
     if user.present?
       user.confirm!
-      render json: { message: "Email confirmed" }, status: :ok
+      login user
     else
       render json: { error: "Invalid or expired token" }, status: :unprocessable_content
     end
