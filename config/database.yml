@@ -74,7 +74,7 @@ default: &default
   username: task_management
   password: task_management_password
   # host: db
-  host: localhost
+  host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
   port: 3306
 
 development:

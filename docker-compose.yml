@@ -10,8 +10,8 @@ services:
       MYSQL_PASSWORD: task_management_password
     volumes:
       - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    expose:
+      - "3306"
 
   app:
     build:
@@ -21,7 +21,7 @@ services:
       RAILS_ENV: development
       DATABASE_USERNAME: task_management
       DATABASE_PASSWORD: task_management_password
-      DATABASE_HOST: db
+      DATABASE_HOST: db 
       DATABASE_PORT: 3306
     volumes:
       - ".:/app"
