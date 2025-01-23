@@ -1,6 +1,10 @@
 class User < ApplicationRecord
+  has_secure_password
+  has_many :tasks, dependent: :destroy
+  
   MAILER_FROM_EMAIL = "no-reply@example.com"
   CONFIRMATION_TOKEN_EXPIRATION = 10.minutes
+  
   has_secure_password
   before_save :downcase_email
   has_many :tasks
