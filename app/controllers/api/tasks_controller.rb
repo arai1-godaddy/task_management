@@ -4,13 +4,14 @@ module Api
 
     # GET /api/tasks
     def index
-      tasks = Task.all
+      tasks = Task.where(user_id: session[:current_user_id])
       render json: tasks
     end
 
     # GET /api/tasks/:id
     def show
-      task = Task.find(params[:id])
+      puts session[:current_user_id]
+      task = Task.find_by(params[:id], user_id: session[:current_user_id])
       render json: task
     end
 
@@ -29,7 +30,7 @@ module Api
 
     # PUT /api/tasks/:id
     def update
-      task = Task.find(params[:id])
+      task = Task.find_by(params[:id], user_id: session[:current_user_id])
       if task.update(task_params)
         render json: task
       else
@@ -39,7 +40,7 @@ module Api
 
     # DELETE /api/tasks/:id
     def destroy
-      task = Task.find(params[:id])
+      task = Task.find_by(id: params[:id], user_id: session[:current_user_id])
       task.destroy
       head :no_content
     end
