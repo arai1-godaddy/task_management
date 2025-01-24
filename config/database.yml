@@ -72,7 +72,7 @@ default: &default
   encoding: utf8mb4
   pool: 5
   username: task_management
-  password: task_management_password
+  password: 
   # host: db
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
   port: 3306
