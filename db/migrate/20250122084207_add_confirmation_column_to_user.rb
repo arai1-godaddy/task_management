@@ -1,5 +1,7 @@
 class AddConfirmationColumnToUser < ActiveRecord::Migration[8.0]
   def change
-    add_column :users, :confirmed_at, :datetime
+    unless column_exists?(:users, :confirmed_at)
+      add_column :users, :confirmed_at, :datetime
+    end
   end
 end
