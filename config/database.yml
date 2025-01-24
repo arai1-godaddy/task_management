@@ -73,7 +73,8 @@ default: &default
   pool: 5
   username: task_management
   password: task_management_password
-  host: db
+  # host: db
+  host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
   port: 3306
 
 development:
