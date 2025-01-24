@@ -19,4 +19,10 @@ Rails.application.routes.draw do
   resources :confirmations, only: [:create, :edit, :new], param: :confirmation_token
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+
+  get '/tasks/options', to: 'tasks#options'
+
+  #route for filtering tasks
+   get '/tasks/filtering', to: 'tasks#index'
+
 end
