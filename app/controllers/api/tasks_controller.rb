@@ -1,5 +1,7 @@
 module Api
   class TasksController < ApplicationController
+    before_action :authenticate_user
+
     # GET /api/tasks
     def index
       tasks = Task.all
@@ -15,6 +17,9 @@ module Api
     # POST /api/tasks
     def create
       task = Task.new(task_params)
+      puts session[:current_user_id]
+      task.user_id = session[:current_user_id]
+      puts task_params
       if task.save
         render json: task, status: :created
       else
@@ -40,6 +45,12 @@ module Api
     end
 
     private
+
+    def authenticate_user
+      unless session[:current_user_id] && User.exists?(id: session[:current_user_id])
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
+    end
 
     def task_params
       params.require(:task).permit(:title, :priority, :status, :due_date, :user_id)
