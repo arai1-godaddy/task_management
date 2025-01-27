@@ -70,4 +70,35 @@ RSpec.describe User, type: :model do
   describe "Associations" do
     it { should have_many(:tasks).dependent(:destroy) }
   end
+
+  describe "Custom Methods" do
+    let(:user) { create(:user) }
+
+    describe "#confirm!" do
+      it "confirms the user" do
+        user.confirm!
+        expect(user.confirmed?).to be true
+      end
+    end
+
+    describe "#uncormfirmed?" do
+      it "return true if the user is not confirmed" do
+        expect(user.unconfirmed?).to be true
+      end
+    end
+
+    describe "#generate_confirmation_token" do
+      it "generates a confirmation token" do
+        token = user.generate_confirmation_token
+        expect(token).not_to be_nil
+      end
+    end
+
+    describe "#send_confirmation_email!" do
+      it "sends a confirmation email" do
+        expect{ user.send_confirmation_email! }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+    end
+
+  end
 end
