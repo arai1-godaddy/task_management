@@ -47,3 +47,5 @@ group :development, :test do
 end
 
 # gem "bcrypt", "~> 3.1"
+
+gem "rspec-rails", "~> 7.1"
