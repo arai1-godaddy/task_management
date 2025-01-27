@@ -49,3 +49,5 @@ end
 # gem "bcrypt", "~> 3.1"
 
 gem "rspec-rails", "~> 7.1"
+
+gem "shoulda-matchers", "~> 6.4"
