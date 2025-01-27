@@ -7,7 +7,6 @@ class User < ApplicationRecord
   
   has_secure_password
   before_save :downcase_email
-  has_many :tasks
 
   validates :name, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
