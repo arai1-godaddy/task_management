@@ -39,6 +39,22 @@ RSpec.describe Api::TasksController, type: :controller do
         expect(response.content_type).to include('application/json')
       end
     end
+
+    context 'with invalid params' do
+        it 'does not create a new Task' do
+          expect do
+            post :create, params: { task: attributes_for(:task, title: nil) }
+          end.to_not change(Task, :count)
+        end
+    
+        it 'renders a JSON response with errors for the new task' do
+          post :create, params: { task: attributes_for(:task, title: nil) }
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.content_type).to include('application/json')
+          expect(JSON.parse(response.body)).to include("title")
+        end
+      end
+
   end
 
   describe 'PUT #update' do
@@ -55,6 +71,22 @@ RSpec.describe Api::TasksController, type: :controller do
         put :update, params: { id: task.id, task: new_attributes }
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to include('application/json')
+      end
+
+      context 'with invalid params' do
+    
+        it 'does not update the task' do
+          original_title = task.title
+          put :update, params: { id: task.id, task: invalid_attributes }
+          expect(task.title).to eq(original_title)
+        end
+    
+        it 'renders a JSON response with errors for the task' do
+          put :update, params: { id: task.id, task: invalid_attributes }
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.content_type).to include('application/json')
+          expect(JSON.parse(response.body)).to include("title")
+        end
       end
     end
 
