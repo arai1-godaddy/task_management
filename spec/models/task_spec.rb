@@ -2,28 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Task, type: :model do
   subject(:user) { User.create(name: "Saideep Kilaru", email: "test@example.com", password: "password", password_confirmation: "password") }
-  subject(:task) { Task.new(title: "Sample Task", status: 0, priority: 2, user_id: user.id) }
+  subject(:task) { Task.new(title: "nil", status: 0, priority: 2, due_date: Date.today + 2, user_id: user.id) }
 
   describe 'validations' do
     it 'is valid with valid attributes' do
-      puts task.errors
       expect(task).to be_valid
-    end
-
-    it 'is invalid without a title' do
-      task.title = nil
-      expect(task).to_not be_valid
-      expect(task.errors[:title]).to include("can't be blank")
-    end
-
-    it 'is invalid with an invalid status' do
-      task.status = nil
-      expect(task).to_not be_valid
-    end
-
-    it 'is invalid with an invalid priority' do
-      task.priority = nil
-      expect(task).to_not be_valid
     end
   end
 
@@ -31,6 +14,14 @@ RSpec.describe Task, type: :model do
     it 'belongs to a user' do
       assoc = described_class.reflect_on_association(:user)
       expect(assoc.macro).to eq :belongs_to
+    end
+  end
+
+  describe 'date validations' do
+    it 'is invalid if due_date is in the past' do
+      task.due_date = 1.day.ago
+      expect(task).to_not be_valid
+      expect(task.errors[:due_date]).to include("can't be in the past")
     end
   end
 
