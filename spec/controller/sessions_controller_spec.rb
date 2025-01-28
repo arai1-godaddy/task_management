@@ -37,4 +37,12 @@ RSpec.describe SessionsController, type: :controller do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    it "logs out the user and returns a success message" do
+      delete :destroy
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)['message']).to eq('Logged out successfully.')
+    end
+  end
 end
