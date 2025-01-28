@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Api::TasksController, type: :controller do
-  let(:user) { create(:user) }
-  let(:task) { create(:task, user: user) }
-  let(:valid_attributes) { { title: 'Test Task', priority: 0, status: 1 } }
-  let(:invalid_attributes) { { title: nil } }
+  let!(:user) { create(:user) }
+  let!(:task) { create(:task, user: user) }
+  let!(:valid_attributes) { { title: 'Test Task', priority: 0, status: 1 } }
+  let!(:invalid_attributes) { { title: nil } }
 
   before do
     allow(controller).to receive(:authenticate_user).and_return(true)
@@ -92,8 +92,7 @@ RSpec.describe Api::TasksController, type: :controller do
 
     describe 'DELETE #destroy' do
       it 'destroys the requested task' do
-        # puts 'asfasdf',task.to_param
-        puts task.inspect
+
         expect do
           delete :destroy, params: { id: task.id }
         end.to change(Task, :count).by(-1)
