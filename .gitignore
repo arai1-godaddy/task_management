@@ -32,6 +32,3 @@
 /config/master.key
 
 .DS_Store
-
-# Ignore coverage folder
-/coverage
