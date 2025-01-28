@@ -48,6 +48,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 7.1' 
 
   gem 'faker'
+
+  gem 'simplecov', '~> 0.21.0'
 end
 
 # gem "bcrypt", "~> 3.1"
