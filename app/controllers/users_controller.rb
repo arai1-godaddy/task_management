@@ -3,8 +3,9 @@ class UsersController < ApplicationController
     user = User.new(user_params)
     if user.save
       user.send_confirmation_email!
+      render json: { message: 'User created successfully' }, status: :ok
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_content
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
