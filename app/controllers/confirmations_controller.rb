@@ -13,6 +13,7 @@ class ConfirmationsController < ApplicationController
     if user.present?
       user.confirm!
       login user
+      render json: {message: "User confirmed and logged in successfully."}, status: :ok
     else
       render json: { error: "Invalid or expired token" }, status: :unprocessable_content
     end
