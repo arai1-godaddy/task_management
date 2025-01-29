@@ -20,9 +20,7 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
 
-  get '/tasks/options', to: 'tasks#options'
-
-  #route for filtering tasks
-   get '/tasks/filtering', to: 'tasks#index'
+  get 'tasks/filtering', to: 'task_filtering#index'
+  get 'tasks/options', to: 'task_filtering#options'
 
 end
