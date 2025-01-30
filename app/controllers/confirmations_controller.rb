@@ -1,10 +1,13 @@
 class ConfirmationsController < ApplicationController
   def create
     user = User.find_by(email: params[:user][:email])
-    if user.present? and user.unconfirmed?
+    if user.nil?
+      render json: { error: "User not found" }, status: :unprocessable_entity
+    elsif user.present? and user.unconfirmed?
       user.send_confirmation_email!
+      render json: { message: "Confirmation email sent" }, status: :ok
     else
-      render json: {error: user.errors.full_messages}, status: :unprocessable_content
+      render json: {error: "User is already confirmed"}, status: :unprocessable_content
     end
   end
 
