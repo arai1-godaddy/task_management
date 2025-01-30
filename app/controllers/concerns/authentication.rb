@@ -15,9 +15,9 @@ module Authentication
     reset_session # Clear session data
   end
 
-  def redirect_if_authenticated
-    render json: { error: "You are already logged in." }, status: :forbidden if user_signed_in?
-  end
+  # def redirect_if_authenticated
+  #   render json: { error: "You are already logged in." }, status: :forbidden if user_signed_in?
+  # end
 
   private
 
@@ -25,11 +25,11 @@ module Authentication
     Current.user ||= session[:current_user_id] && User.find_by(id: session[:current_user_id])
   end
 
-  def current_user
-    Current.user
-  end
+  # def current_user
+  #   Current.user
+  # end
 
-  def user_signed_in?
-    Current.user.present?
-  end
+  # def user_signed_in?
+  #   Current.user.present?
+  # end
 end
