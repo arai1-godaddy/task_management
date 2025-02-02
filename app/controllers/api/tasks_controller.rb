@@ -30,7 +30,7 @@ module Api
 
     # PUT /api/tasks/:id
     def update
-      task = Task.find_by(params[:id], user_id: session[:current_user_id])
+      task = Task.find_by(id: params[:id], user_id: session[:current_user_id])
       puts task_params
       if task.update(task_params)
         render json: task

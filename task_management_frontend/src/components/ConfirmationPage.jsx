@@ -1,51 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { resendConfirmationEmail } from '../utils/api';
 
 const ConfirmationPage = () => {
-  const { confirmation_token } = useParams(); // Get token from URL
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const confirmEmail = async () => {
-      try {
-        await axios.patch(`/confirmations/${confirmation_token}`);
-        setMessage('Email confirmed successfully! You can now log in.');
-        setSuccess(true);
-      } catch (error) {
-        setMessage(error.response?.data.error || 'Confirmation failed.');
-        setSuccess(false);
-      }
-    };
-    confirmEmail();
-  }, [confirmation_token]);
+  const handleResendEmail = async () => {
+    try {
+      await resendConfirmationEmail(email);
+      setMessage('Confirmation email sent. Please check your inbox.');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to resend confirmation email');
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div
-        className={`w-full max-w-lg p-8 rounded-lg shadow-lg ${
-          success ? 'bg-green-100' : 'bg-red-100'
-        }`}
-      >
-        <h1
-          className={`text-2xl font-bold mb-4 text-center ${
-            success ? 'text-green-800' : 'text-red-800'
-          }`}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-6 text-center">Confirm Your Email</h2>
+        {message && <p className="text-green-500 mb-4">{message}</p>}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="Enter your email"
+          />
+        </div>
+        <button
+          onClick={handleResendEmail}
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
-          {success ? 'Confirmation Successful' : 'Confirmation Failed'}
-        </h1>
-        <p className="text-center text-gray-700">{message}</p>
-        {success && (
-          <div className="text-center mt-6">
-            <a
-              href="/auth/login"
-              className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
-            >
-              Go to Login
-            </a>
-          </div>
-        )}
+          Resend Confirmation Email
+        </button>
       </div>
     </div>
   );

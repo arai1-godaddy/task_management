@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { signUp } from '../utils/api';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: '' });
+  const [error, setError] = useState(''); 
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,32 +27,21 @@ const SignUpForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validatePassword()) return;
-
-    setLoading(true);
     try {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      await axios.post('/sign_up', formData, {
-        headers: {
-          'X-CSRF-Token': csrfToken,
-        },
-      });
-      setMessage('Sign-up successful! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 2000); // Redirect after 2 seconds
-    } catch (error) {
-      if (error.response?.status === 422) {
-        setMessage(error.response.data.errors?.join(', ') || 'Invalid input.');
-      } else {
-        setMessage('An unexpected error occurred. Please try again later.');
-      }
-    } finally {
-      setLoading(false);
+      await signUp(formData);
+      navigate('/confirmation'); // Redirect to confirmation page
+    } catch (err) {
+      setError(err.response?.data?.errors?.join(', ') || 'Sign-up failed');
     }
   };
+  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">Sign Up</h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-600">
@@ -116,12 +105,9 @@ const SignUpForm = () => {
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className={`w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 ${
-              loading ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
-          >
-            {loading ? 'Signing Up...' : 'Sign Up'}
+            className={`w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 `}
+         >
+          Sign up
           </button>
         </form>
         {message && (

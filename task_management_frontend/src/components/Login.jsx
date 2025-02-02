@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { login } from '../utils/api';
 
 const Login = ({ setAuth }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // console.log(document.cookie);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,42 +16,26 @@ const Login = ({ setAuth }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     try {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      const response = await axios.post('/login', formData, {
-        withCredentials: true,
-        headers: {
-          'X-CSRF-Token': csrfToken,
-        },
-      });
-      setAuth(response.data.user);
-      setMessage('Login successful!');
-      navigate('/dashboard'); // Redirect after login
-    } catch (error) {
-      if (error.response?.status === 401) {
-        setMessage('Invalid email or password.');
-      } else {
-        setMessage('An unexpected error occurred. Please try again.');
-      }
-    } finally {
-      setLoading(false);
+      const response = await login(formData);
+      // console.log(response);
+      localStorage.setItem('user', JSON.stringify(response.data.user)); // Save user data
+      navigate('/dashboard'); // Redirect to dashboard
+    } catch (err) {
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-6 bg-white rounded-lg shadow-md"
       >
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
 
-        {message && (
-          <p className="mb-4 text-sm text-center text-red-600">
-            {message}
-          </p>
-        )}
 
         <div className="mb-4">
           <label
@@ -91,14 +77,9 @@ const Login = ({ setAuth }) => {
 
         <button
           type="submit"
-          disabled={loading}
-          className={`w-full px-4 py-2 text-white rounded-lg font-medium focus:outline-none focus:ring-4 ${
-            loading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-300'
-          }`}
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
-          {loading ? 'Logging in...' : 'Login'}
+          Login
         </button>
       </form>
     </div>
