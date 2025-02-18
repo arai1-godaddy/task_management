@@ -17,7 +17,7 @@ pipeline{
         }
         stage('test'){
             steps{
-                sh 'rails rspec'
+                sh 'rails spec'
             }
         }
     }
