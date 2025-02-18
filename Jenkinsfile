@@ -1,5 +1,9 @@
 pipeline{
-    agent "agent1"
+    agent {
+        node{
+            label 'agent1'
+        }
+    }
     stages{
         stage('requirements'){
             steps{
@@ -8,7 +12,7 @@ pipeline{
         }
         stage('build'){
             steps{
-                sh 'bunlde install'
+                sh 'bundle install'
             }
         }
         stage('test'){
