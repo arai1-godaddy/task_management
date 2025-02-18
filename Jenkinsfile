@@ -17,7 +17,10 @@ pipeline{
         }
         stage('test'){
             steps{
-                sh 'rails spec'
+                sh ''' 
+                    bundle install --path vendor/bundle
+                    bundle exec rspec
+                '''
             }
         }
     }
