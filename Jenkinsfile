@@ -1,25 +1,31 @@
-pipeline{
+pipeline {
     agent {
-        node{
+        node {
             label 'agent1'
         }
     }
-    stages{
-        stage('requirements'){
-            steps{
+    environment {
+        BUNDLE_PATH = "vendor/bundle"
+    }
+    stages {
+        stage('requirements') {
+            steps {
                 sh 'gem install bundler'
             }
         }
-        stage('build'){
-            steps{
-                sh 'bundle install'
+        stage('build') {
+            steps {
+                sh '''
+                    bundle config set path $BUNDLE_PATH
+                    bundle install
+                '''
             }
         }
-        stage('test'){
-            steps{
-                sh ''' 
-                    bundle install --path vendor/bundle
-                    gem install mysql2 -v '0.5.6' -- --with-openssl-dir=$(brew --prefix openssl@1.1) --with-ldflags=-L$(brew --prefix zstd)/lib
+        stage('test') {
+            steps {
+                sh '''
+                    sudo apt-get update -y || sudo yum update -y
+                    sudo apt-get install -y libmysqlclient-dev || sudo yum install -y mysql-devel
                     bundle exec rspec
                 '''
             }
