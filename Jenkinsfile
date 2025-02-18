@@ -5,7 +5,8 @@ pipeline {
         }
     }
     environment {
-        BUNDLE_PATH = "vendor/bundle"
+        OPENSSL_DIR = "/usr/local/opt/openssl@3"  // Adjust based on your OpenSSL version
+        PATH = "/usr/local/bin:$PATH"
     }
     stages {
         stage('requirements') {
@@ -15,17 +16,16 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh '''
-                    bundle config set path $BUNDLE_PATH
-                    bundle install
-                '''
+                sh 'bundle install'
             }
         }
         stage('test') {
             steps {
-                sh '''
-                    sudo apt-get update -y || sudo yum update -y
-                    sudo apt-get install -y libmysqlclient-dev || sudo yum install -y mysql-devel
+                sh ''' 
+                    export LDFLAGS="-L/usr/local/opt/zstd/lib"
+                    export CPPFLAGS="-I/usr/local/opt/zstd/include"
+                    bundle install --path vendor/bundle
+                    gem install mysql2 -v '0.5.6' -- --with-mysql-config=$(brew --prefix mysql)/bin/mysql_config
                     bundle exec rspec
                 '''
             }
