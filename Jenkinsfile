@@ -16,7 +16,10 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh 'bundle install'
+                sh '''
+                bundle install
+                gem install mysql2 -v '0.5.6' -- --with-mysql-config=$(brew --prefix mysql)/bin/mysql_config
+                '''
             }
         }
         stage('test') {
@@ -25,7 +28,6 @@ pipeline {
                     export LDFLAGS="-L/usr/local/opt/zstd/lib"
                     export CPPFLAGS="-I/usr/local/opt/zstd/include"
                     bundle install --path vendor/bundle
-                    gem install mysql2 -v '0.5.6' -- --with-mysql-config=$(brew --prefix mysql)/bin/mysql_config
                     bundle exec rspec
                 '''
             }
